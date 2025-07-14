@@ -1,0 +1,6 @@
+__pycache__/
+dist/
+/gendiff/__pycache__
+/gendiff/scripts/__pycache__
+.coverage
+checkprjct/
