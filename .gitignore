@@ -4,4 +4,5 @@ dist/
 /gendiff/scripts/__pycache__
 .coverage
 checkprjct/
-.env/
+.env
+coverage.xml
