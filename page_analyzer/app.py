@@ -28,10 +28,8 @@ def index_general():
                 if cur.fetchone():
                     return False, 'Страница уже существует', None
         return True, 'Страница успешно добавлена', url
-
     if request.method=='GET':
         return render_template('index.html')
-
     else:
         form = request.form
         url_orig = form.get('url')
