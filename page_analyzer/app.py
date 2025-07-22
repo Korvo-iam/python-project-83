@@ -18,7 +18,7 @@ def index_general():
     def url_validate(url):
         parsed_url = urlparse(url)
         if parsed_url.scheme not in ('http', 'https') or not parsed_url.netloc:
-            return False, 'Некорректный URL'
+            return False, 'Некорректный URL', None
         if len(url)>255:
             return False, 'URL слишком длинный (максимум 255 символов)', None
         url = f"{parsed_url.scheme}://{parsed_url.netloc}"
