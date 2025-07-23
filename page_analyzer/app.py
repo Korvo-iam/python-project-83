@@ -57,7 +57,7 @@ def index_urls():
 def index_url_id(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at FROM urls WHERE id = %s;", (id,))
+            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))
             row = cur.fetchone()
             if row is None:
                 abort(404)
@@ -66,7 +66,26 @@ def index_url_id(id):
             'name': row[1],
             'created_at': row[2]
             }
-    return render_template('urls/show.html', url=url)
+            cur.execute("""
+                SELECT id, status_code, h1, title, description, created_at::date
+                FROM url_checks
+                WHERE url_id = %s
+                ORDER BY created_at DESC
+            """, (id,))
+            checks = cur.fetchall()
+    return render_template('urls/show.html', url=url, checks=checks)
+
+
+@app.route('/urls/<int:id>/checks', methods = ['POST'])
+def check_urls(id):
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO url_checks (url_id) VALUES (%s) RETURNING id", (id,))
+            check_id = cur.fetchone()[0]
+            conn.commit()
+    flash('Проверка успешно создана', 'success')
+    return redirect(url_for('index_url_id', id=id))
+
 
 @app.route('/test-db')
 def test_db():
