@@ -81,7 +81,6 @@ def check_urls(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("INSERT INTO url_checks (url_id) VALUES (%s) RETURNING id", (id,))
-            check_id = cur.fetchone()[0]
             conn.commit()
     flash('Проверка успешно создана', 'success')
     return redirect(url_for('index_url_id', id=id))
