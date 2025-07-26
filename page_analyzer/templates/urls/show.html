@@ -1,22 +1,23 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Сайт : {{url.name}}</h1>
-<table class="table table-bordered" data-test="url">
+<h1>Сайт: {{url.name}}</h1>
+<table class="table table-bordered"  data-test="url" style="margin-bottom: 50px;">
     <tr>
-      <th>ID</th>
+      <th style="font-weight: normal;">ID</th>
       <td>{{url.id}}</td>
     </tr>
     <tr>
-      <th>Имя</th>
+      <th style="font-weight: normal;">Имя</th>
       <td>{{url.name}}</td>
     </tr>
     <tr>
-      <th>Дата создания</th>
+      <th style="font-weight: normal;">Дата создания</th>
       <td>{{url.created_at}}</td>
     </tr>
 </table>
+<h2>Проверки</h2>
 <form method="post" action="{{ url_for('check_urls', id=url.id) }}">
-  <button type="submit" class="btn btn-primary">Проверить</button>
+  <button type="submit" class="btn btn-primary mt-2 mb-2">Запустить проверку</button>
 </form>
 <table class="table table-bordered" data-test="checks">
 <thead>
