@@ -28,14 +28,6 @@ def url_validate(url):
         return False, 'Страница уже существует', existing_id
     return True, 'Страница успешно добавлена', short_url
 
-def url_validate(url):
-    parsed_url = urlparse(url)
-    normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-    existing_id = sql_commands.check_if_in_db(normalized_url)
-    if existing_id:
-        return False, 'Страница уже существует', existing_id
-    return True, 'Страница успешно добавлена', normalized_url
-
 @app.route('/', methods = ['GET', 'POST'])
 def index_general():
     if request.method=='GET':
