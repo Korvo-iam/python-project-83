@@ -1,5 +1,5 @@
 from page_analyzer import app
-
+app.config['SECRET_KEY'] = 'test_secret_key'
 
 def test_index():
     client = app.test_client()
