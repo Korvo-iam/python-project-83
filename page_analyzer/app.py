@@ -1,11 +1,11 @@
 import os
+import validators
+import requests
 from . import sql_commands
 from flask import Flask, render_template, request, flash, redirect, url_for
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-#import validators
-import requests
 
 
 load_dotenv()
@@ -13,17 +13,28 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
+MAX_URL_LENGTH = 255
+
 def url_validate(url):
     parsed_url = urlparse(url)
-    if parsed_url.scheme not in ('http', 'https') or not parsed_url.netloc:
+    if not validators.url(url):
         return False, 'Некорректный URL', None
     if len(url)>255:
-        return False, 'URL слишком длинный (максимум 255 символов)', None
-    url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-    existing_id = sql_commands.check_if_in_db(url)
-    if sql_commands.check_if_in_db(url):
+        return False, f'URL слишком длинный (максимум {MAX_URL_LENGTH} символов)', None
+    parsed_url = urlparse(url)
+    short_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    existing_id = sql_commands.check_if_in_db(short_url)
+    if existing_id:
         return False, 'Страница уже существует', existing_id
-    return True, 'Страница успешно добавлена', url
+    return True, 'Страница успешно добавлена', short_url
+
+def url_validate(url):
+    parsed_url = urlparse(url)
+    normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    existing_id = sql_commands.check_if_in_db(normalized_url)
+    if existing_id:
+        return False, 'Страница уже существует', existing_id
+    return True, 'Страница успешно добавлена', normalized_url
 
 @app.route('/', methods = ['GET', 'POST'])
 def index_general():
@@ -37,7 +48,7 @@ def index_general():
             flash(message, 'success')
             return redirect(url_for('index_url_id', id=new_id))
         else:
-            if result is not None:  # id существующего сайта
+            if result is not None:
                 flash(message, 'info')
                 return redirect(url_for('index_url_id', id=result))
             flash(message, 'danger')
@@ -54,18 +65,23 @@ def index_url_id(id):
     url, checks = sql_commands.return_url_checks(id)
     return render_template('urls/show.html', url=url, checks=checks)
 
+def get_url_elems(url):
+    response = requests.get(url, timeout=5)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, 'html.parser')
+    h1 = soup.h1.string if soup.h1 else ''
+    title = soup.title.string if soup.title else ''
+    description_tag = soup.find('meta', attrs={'name': 'description'})
+    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else ''
+    code = response.status_code
+    return h1, title, description, code
+
 @app.route('/urls/<int:id>/checks', methods = ['POST'])
 def check_urls(id):
     url = sql_commands.get_url(id)
     try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        h1 = soup.h1.string if soup.h1 else ''
-        title = soup.title.string if soup.title else ''
-        description_tag = soup.find('meta', attrs={'name': 'description'})
-        description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else ''
-        sql_commands.insert_into_url_checks(id, response.status_code, h1, title, description)
+        h1, title, description, code = get_url_elems(url=url)
+        sql_commands.insert_into_url_checks(id, code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('index_url_id', id=id))
     except requests.RequestException:
