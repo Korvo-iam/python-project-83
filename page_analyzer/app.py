@@ -59,6 +59,7 @@ def check_urls(id):
     url = sql_commands.get_url(id)
     try:
         response = requests.get(url, timeout=5)
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         h1 = soup.h1.string if soup.h1 else ''
         title = soup.title.string if soup.title else ''
