@@ -19,7 +19,7 @@ def url_validate(url):
     parsed_url = urlparse(url)
     if not validators.url(url):
         return False, 'Некорректный URL', None
-    if len(url)>255:
+    if len(url)>MAX_URL_LENGTH:
         return False, f'URL слишком длинный (максимум {MAX_URL_LENGTH} символов)', None
     parsed_url = urlparse(url)
     short_url = f"{parsed_url.scheme}://{parsed_url.netloc}"

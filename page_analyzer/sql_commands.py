@@ -28,7 +28,20 @@ def add_in_db(url):
 def return_urls():
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at FROM urls ORDER BY id DESC, created_at DESC")
+            cur.execute("""
+                SELECT
+                    urls.id,
+                    urls.name,
+                    uc.created_at::date AS last_check_date,
+                    uc.status_code
+                FROM urls
+                INNER JOIN (
+                    SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at
+                    FROM url_checks
+                    ORDER BY url_id, created_at DESC
+                ) AS uc ON urls.id = uc.url_id
+                ORDER BY urls.id DESC
+            """)
             urls = cur.fetchall()
             return urls
 
