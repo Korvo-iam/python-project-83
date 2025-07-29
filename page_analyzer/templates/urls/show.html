@@ -17,7 +17,7 @@
 </table>
 <h2>Проверки</h2>
 <form method="post" action="{{ url_for('check_urls', id=url.id) }}">
-  <button type="submit" class="btn btn-primary mt-2 mb-2">Запустить проверку</button>
+  <input type="submit" value="Запустить проверку" class="btn btn-primary mt-2 mb-2" />
 </form>
 <table class="table table-bordered" data-test="checks">
 <thead>
@@ -33,12 +33,11 @@
 <tbody>
 {% for check in checks %}
   <tr>
-    <td>{{ check[0] }}</td>  <!-- id -->
-    <td>{{ check[1] or '' }}</td>  <!-- status_code -->
-    <td>{{ check[2] or '' }}</td>  <!-- h1 -->
-    <td>{{ check[3] or '' }}</td>  <!-- title -->
-    <td>{{ check[4] or '' }}</td>  <!-- description -->
-    <td>{{ check[5] }}</td>  <!-- created_at -->
+    <td>{{ check[0] }}</td>
+    <td>{{ check[1] or '' }}</td>
+    <td>{{ check[2] or '' }}</td>
+    <td>{{ check[3] or '' }}</td>
+    <td>{{ check[4] or '' }}</td>
   </tr>
 {% endfor %}
 </tbody>
