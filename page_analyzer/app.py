@@ -16,7 +16,6 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 MAX_URL_LENGTH = 255
 
 def url_validate(url):
-    parsed_url = urlparse(url)
     if not validators.url(url):
         return False, 'Некорректный URL', None
     if len(url)>MAX_URL_LENGTH:
