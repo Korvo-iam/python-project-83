@@ -3,7 +3,10 @@ import psycopg2
 import os
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",  # сначала пробуем взять из окружения
+    "postgresql://postgres:postgres@localhost:5432/postgres"  # если нет — используем дефолтное значение
+)
 
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
