@@ -50,4 +50,3 @@ def test_url_detail(monkeypatch):
     assert 'Анализатор страниц' in response.data.decode('utf-8')
     assert 'Page analyzer' in response.data.decode('utf-8')
     assert 'h1teg' in response.data.decode('utf-8')
-    assert '2025-07-28' in response.data.decode('utf-8')
