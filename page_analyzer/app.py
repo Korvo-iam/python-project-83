@@ -2,7 +2,7 @@ import os
 import validators
 import requests
 from . import sql_commands
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, make_response
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
@@ -44,7 +44,7 @@ def index_general():
                 return redirect(url_for('index_url_id', id=result))
             flash(message, 'danger')
             #return redirect(url_for('index_general', url=url_orig))
-            return redirect(url_for('index_urls'))
+            return make_response(render_template('index.html', url_value=url_orig), 422)
 
 
 @app.route('/urls', methods = ['GET'])
