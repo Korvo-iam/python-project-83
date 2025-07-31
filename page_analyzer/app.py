@@ -30,7 +30,7 @@ def url_validate(url):
 @app.route('/', methods = ['GET', 'POST'])
 def index_general():
     if request.method=='GET':
-        return render_template('index.html')
+        return render_template('index.html', url_value='')
     else:
         url_orig = request.form.get('url')
         is_valid, message, result = url_validate(url_orig)
@@ -43,7 +43,7 @@ def index_general():
                 flash(message, 'info')
                 return redirect(url_for('index_url_id', id=result))
             flash(message, 'danger')
-            return redirect(url_for('index_general'))
+            return render_template('index.html', url_value=url_orig)
 
 
 @app.route('/urls', methods = ['GET'])
