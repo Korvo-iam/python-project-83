@@ -38,7 +38,7 @@ def return_urls():
                     uc.created_at::date AS last_check_date,
                     uc.status_code
                 FROM urls
-                INNER JOIN (
+                LEFT JOIN (
                     SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at
                     FROM url_checks
                     ORDER BY url_id, created_at DESC

@@ -43,7 +43,7 @@ def index_general():
                 flash(message, 'info')
                 return redirect(url_for('index_url_id', id=result))
             flash(message, 'danger')
-            return render_template('index.html')
+            return redirect(url_for('index_general'))
 
 
 @app.route('/urls', methods = ['GET'])
