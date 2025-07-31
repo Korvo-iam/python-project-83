@@ -1,24 +1,15 @@
 from flask import abort
 import psycopg2
-from urllib.parse import urlparse
 import os
+from dotenv import load_dotenv
 
 
-#"postgresql://postgres:postgres@db:5432/page_analyzer_dev"
-
+load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
-    url = urlparse(DATABASE_URL)
-
-    return psycopg2.connect(
-        dbname=url.path[1:],  # убираем ведущий слэш
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
-    )
-    #return psycopg2.connect(DATABASE_URL)
+    print(DATABASE_URL)
+    return psycopg2.connect(DATABASE_URL)
 
 def check_if_in_db(url):
     with get_connection() as conn:
