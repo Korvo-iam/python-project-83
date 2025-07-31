@@ -25,8 +25,8 @@ def add_in_db(url):
         with conn.cursor() as cur:
             cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
             new_id = cur.fetchone()[0]
-            conn.commit()
-            return new_id
+        conn.commit()
+    return new_id
 
 def return_urls():
     with get_connection() as conn:
