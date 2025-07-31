@@ -1,5 +1,6 @@
 from flask import abort
 import psycopg2
+from urllib.parse import urlparse
 import os
 
 
@@ -8,7 +9,16 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    url = urlparse(DATABASE_URL)
+
+    return psycopg2.connect(
+        dbname=url.path[1:],  # убираем ведущий слэш
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    #return psycopg2.connect(DATABASE_URL)
 
 def check_if_in_db(url):
     with get_connection() as conn:
