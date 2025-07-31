@@ -1,6 +1,5 @@
 install:
 	uv sync
-	psql "$DATABASE_URL" -f database.sql
 
 dev:
 	uv run flask --debug --app page_analyzer:app run
