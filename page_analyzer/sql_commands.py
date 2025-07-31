@@ -4,8 +4,8 @@ import os
 
 
 DATABASE_URL = os.getenv(
-    "DATABASE_URL",  # сначала пробуем взять из окружения
-    "postgresql://postgres:postgres@localhost:5432/postgres"  # если нет — используем дефолтное значение
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@db:5432/postgres"
 )
 
 def get_connection():
