@@ -56,7 +56,7 @@ def index_urls():
 
     if url_value:
         flash('Некорректный URL', 'danger')
-        return make_response(render_template('index.html', url_value=url_value),422)
+        return make_response(render_template('index.html', url_value=url_value))
 
     urls = sql_commands.return_urls()
     return render_template('urls/index.html', urls=urls)
