@@ -42,17 +42,38 @@ def index_general():
             if result is not None:
                 flash(message, 'info')
                 return redirect(url_for('index_url_id', id=result))
-            flash(message, 'danger')
+            #flash(message, 'danger')
             #return make_response(redirect(url_for('index_urls')), 422)
-            return redirect(url_for('index_general', url=url_orig))
+            return redirect(url_for('index_urls', url=url_orig))
             #return make_response(render_template('index.html', url_value=url_orig), 422)
-            #return make_response(redirect(url_for('index_urls')), 422)
+            #return make_response(redirect(url_for('index_urls', url= url_orig)), 422)
 
 
-@app.route('/urls', methods = ['GET'])
+
+@app.route('/urls', methods=['GET'])
 def index_urls():
+    url_value = request.args.get('url', '')
+
+    if url_value:
+        flash('Некорректный URL', 'danger')
+        return render_template('index.html', url_value=url_value)
+
     urls = sql_commands.return_urls()
     return render_template('urls/index.html', urls=urls)
+
+
+# @app.route('/urls', methods = ['GET'])
+# #
+# def index_urls(url=''):
+#     #
+#     if url=='':
+#         urls = sql_commands.return_urls()
+#         return render_template('urls/index.html', urls=urls)
+# # 
+#     else:
+# #
+#         flash('Некорректный URL', 'danger')
+#         return redirect(url_for('index_general', url=url))
 
 @app.route('/urls/<int:id>', methods = ['GET'])
 def index_url_id(id):
