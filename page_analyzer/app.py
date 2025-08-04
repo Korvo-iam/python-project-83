@@ -31,6 +31,11 @@ def url_validate(url):
 def index_general():
         return render_template('index.html', url_value='')
 
+@app.route('/', methods=['POST'])
+def post_to_root():
+    # просто передаёт данные в create_url
+    return create_url()
+
 
 @app.route('/urls', methods=['GET'])
 def index_urls():
