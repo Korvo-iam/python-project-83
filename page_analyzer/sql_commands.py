@@ -23,7 +23,7 @@ def check_if_in_db(url):
 def add_in_db(url):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
+            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))# noqa: E501
             new_id = cur.fetchone()[0]
         conn.commit()
     return new_id
@@ -44,14 +44,14 @@ def return_urls():
                     ORDER BY url_id, created_at DESC
                 ) AS uc ON urls.id = uc.url_id
                 ORDER BY urls.id DESC
-            """)
+            """)# noqa: E501
             urls = cur.fetchall()
             return urls
 
 def return_url_checks(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))
+            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))# noqa: E501
             row = cur.fetchone()
             if row is None:
                 abort(404)
@@ -75,7 +75,7 @@ def insert_into_url_checks(id, status_code, h1, title, description):
             cur.execute("""
                 INSERT INTO url_checks (url_id, status_code, h1, title, description)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (id, status_code, h1, title, description))
+            """, (id, status_code, h1, title, description))# noqa: E501
             conn.commit()
 
 def get_url(id):
