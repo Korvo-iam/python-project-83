@@ -46,10 +46,9 @@ def index_general():
             #norm
             flash(message, 'danger')
             #return make_response(redirect(url_for('index_urls')), 422)
-            return redirect(url_for('index_urls'))
-            #return make_response(render_template('index.html', url_value=url_orig), 422)
+            #return redirect(url_for('index_urls'))
+            return make_response(render_template('index.html', url_value=url_orig), 422)
             #return make_response(redirect(url_for('index_urls', url= url_orig)), 422)
-
 
 
 @app.route('/urls', methods=['GET'])
