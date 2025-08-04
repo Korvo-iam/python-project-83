@@ -31,7 +31,7 @@ def url_validate(url):
 
 @app.route('/', methods=['GET'])
 def index_general():
-        return render_template('index.html', url_value='')
+    return render_template('index.html', url_value='')
 
 
 @app.route('/', methods=['POST'])
@@ -76,7 +76,7 @@ def get_url_elems(url):
     h1 = soup.h1.string if soup.h1 else ''
     title = soup.title.string if soup.title else ''
     description_tag = soup.find('meta', attrs={'name': 'description'})
-    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else '' # noqa: E501
+    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else ''  # noqa: E501
     code = response.status_code
     return h1, title, description, code
 

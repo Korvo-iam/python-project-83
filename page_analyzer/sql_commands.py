@@ -7,9 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+
 def get_connection():
     print(DATABASE_URL)
     return psycopg2.connect(DATABASE_URL)
+
 
 def check_if_in_db(url):
     with get_connection() as conn:
@@ -20,13 +22,15 @@ def check_if_in_db(url):
                 return row[0]
             return None
 
+
 def add_in_db(url):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))# noqa: E501
+            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))  # noqa: E501
             new_id = cur.fetchone()[0]
         conn.commit()
     return new_id
+
 
 def return_urls():
     with get_connection() as conn:
@@ -44,14 +48,15 @@ def return_urls():
                     ORDER BY url_id, created_at DESC
                 ) AS uc ON urls.id = uc.url_id
                 ORDER BY urls.id DESC
-            """)# noqa: E501
+            """)  # noqa: E501
             urls = cur.fetchall()
             return urls
+
 
 def return_url_checks(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))# noqa: E501
+            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))  # noqa: E501
             row = cur.fetchone()
             if row is None:
                 abort(404)
@@ -69,14 +74,16 @@ def return_url_checks(id):
             checks = cur.fetchall()
             return url, checks
 
+
 def insert_into_url_checks(id, status_code, h1, title, description):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
                 INSERT INTO url_checks (url_id, status_code, h1, title, description)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (id, status_code, h1, title, description))# noqa: E501
+            """, (id, status_code, h1, title, description))  # noqa: E501
             conn.commit()
+
 
 def get_url(id):
     with get_connection() as conn:
