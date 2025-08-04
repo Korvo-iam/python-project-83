@@ -5,8 +5,8 @@ app.config['SECRET_KEY'] = 'test_secret_key'
 def test_index():
     client = app.test_client()
     response = client.get('/')
-    assert response.status_code == 200
     html_response = response.data.decode('utf-8')
+    assert response.status_code == 200
     assert "Анализатор страниц" in html_response
 
 
@@ -37,10 +37,9 @@ def test_urls_list(monkeypatch):
     client = app.test_client()
     fake_urls = [(1, 'https://example.com', '2025-07-27', 200)]
     monkeypatch.setattr('page_analyzer.sql_commands.return_urls', lambda: fake_urls)  # noqa: E501
-    assert response.status_code == 200
     response = client.get('/urls')
-    assert response.status_code == 200
     html = response.data.decode('utf-8')
+    assert response.status_code == 200
     assert "https://example.com" in html
 
 
@@ -52,7 +51,6 @@ def test_url_detail(monkeypatch):
             self.id = id
     mock_url = url(id=69)
     mock_checks = [(1, 200, 'Анализатор страниц', 'Page analyzer', 'h1teg', '2025-07-28')]  # noqa: E501
-    assert response.status_code == 200
     monkeypatch.setattr('page_analyzer.sql_commands.return_url_checks', lambda id: (mock_url, mock_checks))  # noqa: E501
     response = client.get('/urls/69')
     assert response.status_code == 200
