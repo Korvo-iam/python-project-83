@@ -23,7 +23,7 @@ def check_if_in_db(url):
 def add_in_db(url):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))# noqa: E501
+            cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
             new_id = cur.fetchone()[0]
         conn.commit()
     return new_id
@@ -39,11 +39,7 @@ def return_urls():
                     uc.status_code
                 FROM urls
                 LEFT JOIN (
-                    SELECT DISTINCT ON (url_id)
-                        id,
-                        url_id,
-                        status_code,
-                        created_at
+                    SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at
                     FROM url_checks
                     ORDER BY url_id, created_at DESC
                 ) AS uc ON urls.id = uc.url_id
@@ -55,7 +51,7 @@ def return_urls():
 def return_url_checks(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))# noqa: E501
+            cur.execute("SELECT id, name, created_at::date FROM urls WHERE id = %s;", (id,))
             row = cur.fetchone()
             if row is None:
                 abort(404)
@@ -77,14 +73,9 @@ def insert_into_url_checks(id, status_code, h1, title, description):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-    SELECT DISTINCT ON (url_id)
-        id,
-        url_id,
-        status_code,
-        created_at
-    FROM url_checks
-    ORDER BY url_id, created_at DESC
-""", (id, status_code, h1, title, description))
+                INSERT INTO url_checks (url_id, status_code, h1, title, description)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (id, status_code, h1, title, description))
             conn.commit()
 
 def get_url(id):
