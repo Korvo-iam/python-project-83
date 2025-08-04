@@ -33,7 +33,6 @@ def index_general():
 
 @app.route('/', methods=['POST'])
 def post_to_root():
-    # просто передаёт данные в create_url
     return create_url()
 
 
@@ -55,6 +54,8 @@ def create_url():
             flash(message, 'info')
             return redirect(url_for('index_url_id', id=result))
         flash(message, 'danger')
+        if request.path == '/':
+            return render_template('index.html', url_value=url_orig), 200
         return make_response(render_template('index.html', url_value=url_orig), 422)
 
 @app.route('/urls/<int:id>', methods = ['GET'])
