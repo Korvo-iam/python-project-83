@@ -33,7 +33,7 @@
   <div class="container mt-5 border p-3 w-50 mx-auto" style="background-color: #fffcfc;">
   <h1 class="fs-1">Анализатор страниц</h1>
   <p class="fs-4">Бесплатно проверяйте сайты на SEO-пригодность</p>
-  <form method="post" action="/" class="d-flex mt-3">
+  <form method="post" action="{{ url_for('create_url') }}" class="d-flex mt-3">
   <input class="form-control me-2" name="url" type="url" placeholder="Введите URL сайта" aria-label="Search" required maxlength="255" value="{{ url_value | default('') }}">
   <input type="submit" class="btn btn-primary" value="Проверить">
   </form>

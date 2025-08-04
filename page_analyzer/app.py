@@ -27,34 +27,30 @@ def url_validate(url):
         return False, 'Страница уже существует', existing_id
     return True, 'Страница успешно добавлена', short_url
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods = ['GET'])
 def index_general():
-    if request.method=='GET':
         return render_template('index.html', url_value='')
-    else:
-        url_orig = request.form.get('url')
-        is_valid, message, result = url_validate(url_orig)
-        if is_valid:
-            new_id = sql_commands.add_in_db(result)
-            flash(message, 'success')
-            return redirect(url_for('index_url_id', id=new_id))
-        else:
-            if result is not None:
-                flash(message, 'info')
-                return redirect(url_for('index_url_id', id=result))
-            #experminet
-            #norm
-            flash(message, 'danger')
-            #return make_response(redirect(url_for('index_urls')), 422)
-            #return redirect(url_for('index_urls'))
-            return make_response(render_template('index.html', url_value=url_orig), 422)
-            #return make_response(redirect(url_for('index_urls', url= url_orig)), 422)
 
 
 @app.route('/urls', methods=['GET'])
 def index_urls():
-   urls = sql_commands.return_urls()
-   return render_template('urls/index.html', urls=urls)
+    urls = sql_commands.return_urls()
+    return render_template('urls/index.html', urls=urls)
+
+@app.route('/urls', methods=['POST'])
+def create_url():
+    url_orig = request.form.get('url')
+    is_valid, message, result = url_validate(url_orig)
+    if is_valid:
+        new_id = sql_commands.add_in_db(result)
+        flash(message, 'success')
+        return redirect(url_for('index_url_id', id=new_id))
+    else:
+        if result is not None:
+            flash(message, 'info')
+            return redirect(url_for('index_url_id', id=result))
+        flash(message, 'danger')
+        return make_response(render_template('index.html', url_value=url_orig), 422)
 
 @app.route('/urls/<int:id>', methods = ['GET'])
 def index_url_id(id):
