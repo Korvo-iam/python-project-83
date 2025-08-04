@@ -2,7 +2,7 @@ import os
 import validators
 import requests
 from . import sql_commands
-from flask import Flask, render_template, request, flash, redirect, url_for, make_response
+from flask import Flask, render_template, request, flash, redirect, url_for, make_response  # noqa: E501
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
@@ -15,11 +15,12 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 MAX_URL_LENGTH = 255
 
+
 def url_validate(url):
     if not validators.url(url):
         return False, 'Некорректный URL', None
-    if len(url)>MAX_URL_LENGTH:
-        return False, f'URL слишком длинный (максимум {MAX_URL_LENGTH} символов)', None
+    if len(url) > MAX_URL_LENGTH:
+        return False, f'URL слишком длинный (максимум {MAX_URL_LENGTH} символов)', None  # noqa: E501
     parsed_url = urlparse(url)
     short_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
     existing_id = sql_commands.check_if_in_db(short_url)
@@ -27,9 +28,11 @@ def url_validate(url):
         return False, 'Страница уже существует', existing_id
     return True, 'Страница успешно добавлена', short_url
 
-@app.route('/', methods = ['GET'])
+
+@app.route('/', methods=['GET'])
 def index_general():
         return render_template('index.html', url_value='')
+
 
 @app.route('/', methods=['POST'])
 def post_to_root():
@@ -40,6 +43,7 @@ def post_to_root():
 def index_urls():
     urls = sql_commands.return_urls()
     return render_template('urls/index.html', urls=urls)
+
 
 @app.route('/urls', methods=['POST'])
 def create_url():
@@ -56,12 +60,14 @@ def create_url():
         flash(message, 'danger')
         if request.path == '/':
             return render_template('index.html', url_value=url_orig), 200
-        return make_response(render_template('index.html', url_value=url_orig), 422)
+        return make_response(render_template('index.html', url_value=url_orig), 422)  # noqa: E501
 
-@app.route('/urls/<int:id>', methods = ['GET'])
+
+@app.route('/urls/<int:id>', methods=['GET'])
 def index_url_id(id):
     url, checks = sql_commands.return_url_checks(id)
     return render_template('urls/show.html', url=url, checks=checks)
+
 
 def get_url_elems(url):
     response = requests.get(url, timeout=5)
@@ -70,11 +76,12 @@ def get_url_elems(url):
     h1 = soup.h1.string if soup.h1 else ''
     title = soup.title.string if soup.title else ''
     description_tag = soup.find('meta', attrs={'name': 'description'})
-    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else ''
+    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else '' # noqa: E501
     code = response.status_code
     return h1, title, description, code
 
-@app.route('/urls/<int:id>/checks', methods = ['POST'])
+
+@app.route('/urls/<int:id>/checks', methods=['POST'])
 def check_urls(id):
     url = sql_commands.get_url(id)
     try:
