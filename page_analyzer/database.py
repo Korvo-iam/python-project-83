@@ -1,7 +1,7 @@
 from flask import abort
+from dotenv import load_dotenv
 import psycopg2
 import os
-from dotenv import load_dotenv
 
 
 load_dotenv()
@@ -94,3 +94,4 @@ def get_url(id):
                 return url[0]
             else:
                 return None
+

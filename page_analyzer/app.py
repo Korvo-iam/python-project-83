@@ -1,32 +1,17 @@
 import os
-import validators
 import requests
-from . import sql_commands
+from . import database
+from .parser import get_url_elems
+from .validate import url_validate
 from flask import Flask, render_template, request, flash, redirect, url_for, make_response  # noqa: E501
 from dotenv import load_dotenv
-from urllib.parse import urlparse
-from bs4 import BeautifulSoup
 
 
 load_dotenv()
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
-MAX_URL_LENGTH = 255
-
-
-def url_validate(url):
-    if not validators.url(url):
-        return False, 'Некорректный URL', None
-    if len(url) > MAX_URL_LENGTH:
-        return False, f'URL слишком длинный (максимум {MAX_URL_LENGTH} символов)', None  # noqa: E501
-    parsed_url = urlparse(url)
-    short_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-    existing_id = sql_commands.check_if_in_db(short_url)
-    if existing_id:
-        return False, 'Страница уже существует', existing_id
-    return True, 'Страница успешно добавлена', short_url
 
 
 @app.route('/', methods=['GET'])
@@ -41,7 +26,7 @@ def post_to_root():
 
 @app.route('/urls', methods=['GET'])
 def index_urls():
-    urls = sql_commands.return_urls()
+    urls = database.return_urls()
     return render_template('urls/index.html', urls=urls)
 
 
@@ -50,7 +35,7 @@ def create_url():
     url_orig = request.form.get('url')
     is_valid, message, result = url_validate(url_orig)
     if is_valid:
-        new_id = sql_commands.add_in_db(result)
+        new_id = database.add_in_db(result)
         flash(message, 'success')
         return redirect(url_for('index_url_id', id=new_id))
     else:
@@ -65,28 +50,16 @@ def create_url():
 
 @app.route('/urls/<int:id>', methods=['GET'])
 def index_url_id(id):
-    url, checks = sql_commands.return_url_checks(id)
+    url, checks = database.return_url_checks(id)
     return render_template('urls/show.html', url=url, checks=checks)
-
-
-def get_url_elems(url):
-    response = requests.get(url, timeout=5)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, 'html.parser')
-    h1 = soup.h1.string if soup.h1 else ''
-    title = soup.title.string if soup.title else ''
-    description_tag = soup.find('meta', attrs={'name': 'description'})
-    description = description_tag['content'] if description_tag and 'content' in description_tag.attrs else ''  # noqa: E501
-    code = response.status_code
-    return h1, title, description, code
 
 
 @app.route('/urls/<int:id>/checks', methods=['POST'])
 def check_urls(id):
-    url = sql_commands.get_url(id)
+    url = database.get_url(id)
     try:
         h1, title, description, code = get_url_elems(url=url)
-        sql_commands.insert_into_url_checks(id, code, h1, title, description)
+        database.insert_into_url_checks(id, code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('index_url_id', id=id))
     except requests.RequestException:
