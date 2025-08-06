@@ -9,7 +9,6 @@ Render.com :
 
 ##  Project preview / Превью проекта
 ![](page_analyzer/assets/screen.png)  
-*Main page of the application*
 
 
 ## Links / Ссылки
