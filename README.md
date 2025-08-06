@@ -7,6 +7,11 @@ Render.com :
 [https://python-project-83-rtzj.onrender.com](https://python-project-83-rtzj.onrender.com)
 
 
+##  Project preview / Превью проекта
+![](page_analyzer/assets/screen.png)  
+*Main page of the application*
+
+
 ## Links / Ссылки
 https://ru.hexlet.io/projects/83/members/46875/reviews
 
