@@ -10,9 +10,6 @@ lint:
 test:
 	uv run pytest
 
-#build:
-#	uv build
-
 test-coverage:
 	uv run pytest --cov=page_analyzer tests --cov-report xml
 
@@ -22,12 +19,6 @@ build:
 render-start:
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
-
-#package-install:
-#	uv tool install dist/*.whl
-
-#publish:
-#	uv run poetry publish --dry-run
 
 PORT ?= 8000
 
