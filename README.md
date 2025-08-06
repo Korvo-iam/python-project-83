@@ -8,8 +8,15 @@ Render.com :
 
 
 ##  Project preview / Превью проекта
-![](page_analyzer/assets/screen.png)  
-
+![](page_analyzer/assets/screen.png)
+🇷🇺 Основная страница<br>
+🇬🇧 Main page
+![](page_analyzer/assets/screen2.png)
+🇷🇺 Cтраница с ссылками<br>
+🇬🇧 Page with urls
+![](page_analyzer/assets/screen3.png)
+🇷🇺 Страница ссылки<br>
+🇬🇧 Url page
 
 ## Links / Ссылки
 https://ru.hexlet.io/projects/83/members/46875/reviews
